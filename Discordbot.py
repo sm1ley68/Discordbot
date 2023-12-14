@@ -129,7 +129,7 @@ async def roll(ctx, max_value: int):
     result = random.randint(1, max_value)
 
     # Отправляем результат в чат
-    await ctx.send(f'{ctx.author.mention} 🎲бросает кубик и получает: {result}')
+    await ctx.send(f'{ctx.author.mention} выпадает число: {result}')
 
 
 random_number = None
