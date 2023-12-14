@@ -172,10 +172,50 @@ async def show_commands(ctx):
     await ctx.send(f'Список команд:\n```\n{commands_str}\n```')
 
 
+# чистит чат
 @bot.command(pass_context=True)
 @commands.has_permissions(administrator=True)
 async def clear(ctx, amount=30):
     await ctx.channel.purge(limit=amount)
+
+
+# Список вопросов и ответов
+questions_and_answers = [
+    {"question": "Какая столица России?", "answer": "Москва"},
+    {"question": "Какое самое большое озеро в мире?", "answer": "Байкал"},
+    {"question": "Сколько планет в Солнечной системе?", "answer": "8"},
+    {"question": "Как зовут луну в мире Minecraft?", "answer": "Луна"}
+]
+
+# Глобальные переменные для текущего вопроса и ответа
+current_question = None
+current_answer = None
+
+
+# Команда для начала викторины
+@bot.command(name='startquiz', help='Начать викторину')
+async def start_quiz(ctx):
+    global current_question
+    global current_answer
+
+    # Выбираем случайный вопрос
+    current_question = random.choice(questions_and_answers)
+    current_answer = current_question["answer"]
+
+    # Отправляем вопрос в чат
+    await ctx.send(f'{current_question["question"]}')
+
+
+# Команда для ответа на вопрос
+@bot.command(name='answer', help='Ответить на текущий вопрос')
+async def answer_question(ctx, user_answer: str):
+    global current_answer
+
+    if user_answer.lower() == current_answer.lower():
+        await ctx.send(f'Правильно! {ctx.author.mention} получает 1 очко.')
+        await start_quiz(ctx)
+    else:
+        await ctx.send(f'Неправильно. Попробуйте еще раз!')
 
 
 bot.run("token")
