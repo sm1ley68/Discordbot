@@ -5,7 +5,7 @@ import disnake
 from disnake.ext import commands
 import random
 
-with open('токен.txt', 'r') as file:
+with open('token.txt', 'r') as file:
     TOKEN = file.read().replace('\n', '')
 
 bot = commands.Bot(command_prefix="$", help_command=None, intents=disnake.Intents.all(),
