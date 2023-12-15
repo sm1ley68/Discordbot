@@ -4,20 +4,20 @@ import datetime
 import disnake
 from disnake.ext import commands
 import random
-import os
 
-import Moderation as moderation
+with open('токен.txt', 'r') as file:
+    TOKEN = file.read().replace('\n', '')
 
 bot = commands.Bot(command_prefix="$", help_command=None, intents=disnake.Intents.all(),
                    test_guilds=[793728158150557707])
 
 CENSORED_WORDS = []
 
-with open('token.txt', 'r') as file:
-    TOKEN = file.read().replace('\n', '')
+
 @bot.event
 async def on_ready():
     print(f'Bot {bot.user} in ready to work!')
+
 
 # @bot.event
 # async def panel_menu(member):
@@ -55,26 +55,45 @@ async def on_message(message):
 
 
 # кик пользователя
-    if message.content == 'кик':
-        member = message.mentions[0]
-        await moderation.kick(member)
+bot.command(name='кик', help='Выгнать пользователя(Только администрация)')
+
+
+@commands.has_permissions(kick_members=True, administrator=True)
+async def kick(ctx, member: disnake.Member, *, reason='Нарушение правил.'):
+    await ctx.send(
+        f'Администратор {ctx.author.mention} исключил пользователя {member.mention} "Нарушение правил сервера"')
+    await member.kick(reason=reason)
+    await ctx.message.delete()
 
 
 # мут пользователя
-    if message.content == '$мут':
-        member = message.mentions[0]
-        await moderation.mute(member)
+@bot.command(name='мут', help='Замьютит участника(Только администрация)')
+@commands.has_permissions(administrator=True)
+async def mute(ctx, member: disnake.Member, *, reason=None):
+    mute_role = disnake.utils.get(ctx.message.guild.roles, name='петушок молчит')
+
+    await member.add_roles(mute_role)
+    await ctx.send(f'{ctx.author.mention} замутил {member.mention} по причине {reason}.')
 
 
 # анмут пользователя
-    if message.content == '$анмут':
-        member = message.mentions[0]
-        await moderation.anmute(member)
+@bot.command(name='анмут', help='Размьютить участника(Только администрация)')
+@commands.has_permissions(administrator=True)
+async def unmute(ctx, member: disnake.Member):
+    mute_role = disnake.utils.get(ctx.guild.roles, name='петушок молчит')
+
+    await member.remove_roles(mute_role)
+    await ctx.send(f'{ctx.author.mention} размутил {member.mention}.')
+
 
 # бан пользователя
-    if message.content == '$бан':
-        member = message.mentions[0]
-        await moderation.ban(member)
+@bot.command(name='бан', help='Забанить пользователя(Только администрация)')
+@commands.has_permissions(ban_members=True, administrator=True)
+async def ban(ctx, member: disnake.Member, *, reason='Нарушение правил.'):
+    await ctx.send(
+        f'Администратор {ctx.author.mention} забанил пользователя {member.mention} "Нарушение правил сервера"')
+    await member.ban(reason=reason)
+    await ctx.message.delete()
 
 
 # бросок кубика
@@ -201,6 +220,5 @@ async def answer_question(ctx, user_answer: str):
         await start_quiz(ctx)
     else:
         await ctx.send(f'Неправильно. Попробуйте еще раз!')
-
 
 bot.run(TOKEN)
