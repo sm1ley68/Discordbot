@@ -8,11 +8,12 @@ import random
 with open('token.txt', 'r') as file:
     TOKEN = file.read().replace('\n', '')
 
-bot = commands.Bot(command_prefix="$", help_command=None, intents=disnake.Intents.all(),
+ACTIVITY = disnake.Activity(type=disnake.ActivityType.listening, name="Pyrokinesis - брошен")
+
+bot = commands.Bot(command_prefix="$", help_command=None, intents=disnake.Intents.all(),activity=ACTIVITY,
                    test_guilds=[793728158150557707])
 
 CENSORED_WORDS = []
-
 
 @bot.event
 async def on_ready():
