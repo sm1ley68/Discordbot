@@ -55,7 +55,7 @@ async def on_message(message):
 
 
 # кик пользователя
-    if message.content == '$кик':
+    if message.content == 'кик':
         member = message.mentions[0]
         await moderation.kick(member)
 
