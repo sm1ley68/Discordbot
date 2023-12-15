@@ -23,7 +23,6 @@ async def on_ready():
 # async def panel_menu(member):
 #     embed = disnake.Embed(
 #         title='Приветствуем тебя!',
-#
 #     )
 
 
