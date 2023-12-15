@@ -6,19 +6,18 @@ from disnake.ext import commands
 import random
 import os
 
-from Moderation import Moderation
+import Moderation as moderation
 
 bot = commands.Bot(command_prefix="$", help_command=None, intents=disnake.Intents.all(),
                    test_guilds=[793728158150557707])
 
 CENSORED_WORDS = []
 
-
+with open('token.txt', 'r') as file:
+    TOKEN = file.read().replace('\n', '')
 @bot.event
 async def on_ready():
     print(f'Bot {bot.user} in ready to work!')
-
-moderation = Moderation()
 
 # @bot.event
 # async def panel_menu(member):
@@ -56,19 +55,26 @@ async def on_message(message):
 
 
 # кик пользователя
-moderation.kick()
+    if message.content == '$кик':
+        member = message.mentions[0]
+        await moderation.kick(member)
 
 
 # мут пользователя
-moderation.mute()
+    if message.content == '$мут':
+        member = message.mentions[0]
+        await moderation.mute(member)
 
 
 # анмут пользователя
-moderation.anmute()
-
+    if message.content == '$анмут':
+        member = message.mentions[0]
+        await moderation.anmute(member)
 
 # бан пользователя
-moderation.ban()
+    if message.content == '$бан':
+        member = message.mentions[0]
+        await moderation.ban(member)
 
 
 # бросок кубика
@@ -197,4 +203,4 @@ async def answer_question(ctx, user_answer: str):
         await ctx.send(f'Неправильно. Попробуйте еще раз!')
 
 
-bot.run("token")
+bot.run(TOKEN)
